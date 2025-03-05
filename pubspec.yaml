@@ -39,9 +39,9 @@ dependencies:
   syncfusion_flutter_datagrid: ^20.4.48
   math_expressions: ^2.6.0
   intl: ^0.20.2
-  firebase_core: ^3.10.1
-  firebase_auth: ^5.4.1
-  cloud_firestore: ^5.6.2
+  firebase_core: ^3.12.1
+  firebase_database: ^11.3.4
+
 
 dev_dependencies:
   flutter_test:

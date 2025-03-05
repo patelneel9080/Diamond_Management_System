@@ -1,70 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:intl/intl.dart';
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Diamond Inventory Management',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        fontFamily: 'Roboto',
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: DiamondManagementScreen(),
-    );
-  }
-}
-
-class Diamond {
-  Diamond(
-      this.id,
-      this.caratWeight,
-      this.clarity,
-      this.color,
-      this.currentHolder,
-      this.receivedFrom,
-      this.receivedDate,
-      this.status,
-      this.price,
-      this.notes,
-      );
-
-  final int id;
-  double caratWeight;
-  String clarity;
-  String color;
-  String currentHolder;
-  String receivedFrom;
-  DateTime receivedDate;
-  String status; // Available, In Process, Sold
-  double price;
-  String notes;
-}
-
-class DiamondTransaction {
-  final int diamondId;
-  final DateTime date;
-  final String fromPerson;
-  final String toPerson;
-  final String action; // Received, Transferred, Sold
-  final String notes;
-
-  DiamondTransaction(
-      this.diamondId,
-      this.date,
-      this.fromPerson,
-      this.toPerson,
-      this.action,
-      this.notes,
-      );
-}
+import '../models/diamond.dart';
+import '../models/diamond_transaction.dart';
+import '../data/diamond_data_source.dart';
+import '../services/firebase_services.dart';
 
 class TableInfo {
   String name;
@@ -95,13 +35,25 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
   List<TableInfo> tables = [];
   List<DiamondTransaction> transactions = [];
   int tabIndex = 0;
+  final FirebaseService _firebaseService = FirebaseService();
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
 
+    // Initialize Firebase and load data
+    _initializeData();
+  }
+
+  Future<void> _initializeData() async {
     // Create the default table
-    tables.add(_createDefaultTable());
+    TableInfo defaultTable = await _createDefaultTable();
+
+    setState(() {
+      tables.add(defaultTable);
+      _isLoading = false;
+    });
 
     // Initialize tab controller
     _tabController = TabController(length: tables.length, vsync: this);
@@ -112,7 +64,7 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
     });
   }
 
-  TableInfo _createDefaultTable() {
+  Future<TableInfo> _createDefaultTable() async {
     // Default column names and headers
     List<String> columnNames = [
       'id', 'caratWeight', 'clarity', 'color', 'currentHolder',
@@ -126,6 +78,7 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
 
     // Create data source
     DiamondDataSource dataSource = DiamondDataSource();
+    await dataSource.initializeData();
 
     // Create columns
     List<GridColumn> columns = _generateColumns(columnNames, columnHeaders);
@@ -187,7 +140,11 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
             child: Text('Cancel', style: TextStyle(color: Colors.red)),
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
+              // Create a new data source
+              DiamondDataSource dataSource = DiamondDataSource();
+              await dataSource.initializeData();
+
               setState(() {
                 // Create a new table with the same structure as the default
                 List<String> columnNames = [
@@ -200,7 +157,6 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
                   'Received Date', 'Status', 'Price'
                 ];
 
-                DiamondDataSource dataSource = DiamondDataSource();
                 List<GridColumn> columns = _generateColumns(columnNames, columnHeaders);
 
                 tables.add(TableInfo(
@@ -427,36 +383,47 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
             child: Text('Cancel', style: TextStyle(color: Colors.red)),
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               if (formKey.currentState!.validate()) {
+                // Generate new diamond ID
+                int newId = 1;
+                if (tables[tabIndex].dataSource.diamonds.isNotEmpty) {
+                  newId = tables[tabIndex].dataSource.diamonds
+                      .map((d) => d.id)
+                      .reduce((a, b) => a > b ? a : b) + 1;
+                }
+
+                final newDiamond = Diamond(
+                  newId,
+                  double.parse(caratController.text),
+                  clarityController.text,
+                  colorController.text,
+                  receivedFromController.text,
+                  receivedFromController.text,
+                  DateTime.now(),
+                  'Available',
+                  double.parse(priceController.text),
+                  notesController.text,
+                );
+
+                // Create transaction
+                final transaction = DiamondTransaction(
+                  newDiamond.id,
+                  DateTime.now(),
+                  receivedFromController.text,
+                  receivedFromController.text,
+                  'Received',
+                  'Initial receipt of diamond',
+                );
+
+                // Add to Firebase
+                await _firebaseService.addTransaction(transaction);
+                await tables[tabIndex].dataSource.addDiamond(newDiamond);
+
                 setState(() {
-                  final currentTable = tables[tabIndex];
-                  final newDiamond = Diamond(
-                    currentTable.dataSource.diamonds.length + 1,
-                    double.parse(caratController.text),
-                    clarityController.text,
-                    colorController.text,
-                    receivedFromController.text,
-                    // Initial holder is the source
-                    receivedFromController.text,
-                    DateTime.now(),
-                    'Available',
-                    double.parse(priceController.text),
-                    notesController.text,
-                  );
-
-                  currentTable.dataSource.addDiamond(newDiamond);
-
-                  // Record the transaction
-                  transactions.add(DiamondTransaction(
-                    newDiamond.id,
-                    DateTime.now(),
-                    receivedFromController.text,
-                    receivedFromController.text,
-                    'Received',
-                    'Initial receipt of diamond',
-                  ));
+                  transactions.add(transaction);
                 });
+
                 Navigator.pop(context);
               }
             },
@@ -468,7 +435,7 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
     );
   }
 
-  void _transferDiamond() {
+  void _transferDiamond() async {
     final currentTable = tables[tabIndex];
     if (currentTable.selectedDiamonds.length != 1) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -510,24 +477,35 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
             child: Text('Cancel', style: TextStyle(color: Colors.red)),
           ),
           ElevatedButton(
-            onPressed: () {
-              setState(() {
+            onPressed: () async {
+              if (toPersonController.text.isNotEmpty) {
                 final fromPerson = diamond.currentHolder;
                 diamond.currentHolder = toPersonController.text;
 
-                // Record the transaction
-                transactions.add(DiamondTransaction(
+                // Create transaction
+                final transaction = DiamondTransaction(
                   diamond.id,
                   DateTime.now(),
                   fromPerson,
                   toPersonController.text,
                   'Transferred',
                   notesController.text,
-                ));
+                );
 
-                currentTable.dataSource.updateDiamond(diamond);
-              });
-              Navigator.pop(context);
+                // Add to Firebase and update
+                await _firebaseService.addTransaction(transaction);
+                await currentTable.dataSource.updateDiamond(diamond);
+
+                setState(() {
+                  transactions.add(transaction);
+                });
+
+                Navigator.pop(context);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Please enter recipient name')),
+                );
+              }
             },
             child: Text('Transfer', style: TextStyle(color: Colors.white)),
             style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
@@ -537,7 +515,7 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
     );
   }
 
-  void _viewTransactionHistory() {
+  void _viewTransactionHistory() async {
     final currentTable = tables[tabIndex];
     if (currentTable.selectedDiamonds.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -547,10 +525,21 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
     }
 
     final diamond = currentTable.selectedDiamonds[0];
-    final diamondTransactions = transactions
-        .where((t) => t.diamondId == diamond.id)
-        .toList()
-      ..sort((a, b) => b.date.compareTo(a.date));
+
+    // Show loading indicator
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Center(child: CircularProgressIndicator()),
+    );
+
+    // Fetch transactions from Firebase
+    List<DiamondTransaction> diamondTransactions =
+    await _firebaseService.fetchTransactionsForDiamond(diamond.id);
+    diamondTransactions.sort((a, b) => b.date.compareTo(a.date));
+
+    // Close loading indicator
+    Navigator.of(context).pop();
 
     showDialog(
       context: context,
@@ -559,7 +548,9 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
         content: Container(
           width: double.maxFinite,
-          child: ListView.builder(
+          child: diamondTransactions.isEmpty
+              ? Center(child: Text('No transaction history found'))
+              : ListView.builder(
             shrinkWrap: true,
             itemCount: diamondTransactions.length,
             itemBuilder: (context, index) {
@@ -628,13 +619,20 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
             tooltip: 'View History',
           ),
         ],
-        bottom: TabBar(
+        bottom: _isLoading
+            ? PreferredSize(
+          preferredSize: Size.fromHeight(4.0),
+          child: LinearProgressIndicator(),
+        )
+            : TabBar(
           controller: _tabController,
           isScrollable: true,
           tabs: tables.map((table) => Tab(text: table.name)).toList(),
         ),
       ),
-      body: TabBarView(
+      body: _isLoading
+          ? Center(child: CircularProgressIndicator())
+          : TabBarView(
         controller: _tabController,
         children: tables.map((table) {
           return Container(
@@ -672,99 +670,3 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
     );
   }
 }
-
-class DiamondDataSource extends DataGridSource {
-  List<Diamond> diamonds = [];
-  List<DataGridRow> _dataGridRows = [];
-
-  DiamondDataSource() {
-    diamonds = [
-      Diamond(1, 1.5, 'VS1', 'D', 'John', 'Supplier A', DateTime.now(),
-          'Available', 15000, 'Premium cut'),
-      Diamond(2, 2.0, 'VVS2', 'E', 'Sarah', 'Supplier B', DateTime.now(),
-          'In Process', 25000, 'Excellent polish'),
-    ];
-    _generateDataGridRows();
-  }
-
-  void _generateDataGridRows() {
-    _dataGridRows = diamonds.map<DataGridRow>((diamond) {
-      return DataGridRow(cells: [
-        DataGridCell<int>(columnName: 'id', value: diamond.id),
-        DataGridCell<double>(
-            columnName: 'caratWeight', value: diamond.caratWeight),
-        DataGridCell<String>(columnName: 'clarity', value: diamond.clarity),
-        DataGridCell<String>(columnName: 'color', value: diamond.color),
-        DataGridCell<String>(
-            columnName: 'currentHolder', value: diamond.currentHolder),
-        DataGridCell<String>(
-            columnName: 'receivedDate',
-            value: DateFormat('yyyy-MM-dd').format(diamond.receivedDate)),
-        DataGridCell<String>(columnName: 'status', value: diamond.status),
-        DataGridCell<String>(
-            columnName: 'price',
-            value: NumberFormat.currency(symbol: '\$').format(diamond.price)),
-      ]);
-    }).toList();
-  }
-
-  void addDiamond(Diamond diamond) {
-    diamonds.add(diamond);
-    _generateDataGridRows();
-    notifyListeners();
-  }
-
-  void updateDiamond(Diamond diamond) {
-    final index = diamonds.indexWhere((d) => d.id == diamond.id);
-    if (index != -1) {
-      diamonds[index] = diamond;
-      _generateDataGridRows();
-      notifyListeners();
-    }
-  }
-
-  @override
-  List<DataGridRow> get rows => _dataGridRows;
-
-  @override
-  DataGridRowAdapter buildRow(DataGridRow row) {
-    return DataGridRowAdapter(
-      cells: row.getCells().map<Widget>((dataGridCell) {
-        return Container(
-          alignment: Alignment.center,
-          padding: EdgeInsets.all(8.0),
-          child: Text(dataGridCell.value.toString(),
-              style: TextStyle(fontSize: 14)),
-        );
-      }).toList(),
-    );
-  }
-}
-
-//   import 'package:flutter/material.dart';
-//   import 'package:firebase_core/firebase_core.dart';
-//   import 'firebase_options.dart';
-// import 'screens/diamond_management_screen.dart';
-//
-//   void main() async {
-//     WidgetsFlutterBinding.ensureInitialized();
-//
-//     await Firebase.initializeApp(
-//       options: DefaultFirebaseOptions.currentPlatform,
-//     );
-//     runApp(DiamondInventoryApp());
-//   }
-//
-//   class DiamondInventoryApp extends StatelessWidget {
-//     @override
-//     Widget build(BuildContext context) {
-//       return MaterialApp(
-//         title: 'Diamond Inventory',
-//         theme: ThemeData(
-//           primarySwatch: Colors.blue,
-//           visualDensity: VisualDensity.adaptivePlatformDensity,
-//         ),
-//         home: DiamondManagementScreen(),
-//       );
-//     }
-//   }
