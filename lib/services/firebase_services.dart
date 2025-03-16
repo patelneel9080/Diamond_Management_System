@@ -3,9 +3,12 @@ import '../models/diamond.dart';
 import '../models/diamond_transaction.dart';
 
 class FirebaseService {
-  final DatabaseReference _diamondsRef = FirebaseDatabase.instance.ref().child('diamonds');
-  final DatabaseReference _transactionsRef = FirebaseDatabase.instance.ref().child('transactions');
-  final DatabaseReference _tablesRef = FirebaseDatabase.instance.ref().child('tables');
+  final DatabaseReference _diamondsRef =
+      FirebaseDatabase.instance.ref().child('diamonds');
+  final DatabaseReference _transactionsRef =
+      FirebaseDatabase.instance.ref().child('transactions');
+  final DatabaseReference _tablesRef =
+      FirebaseDatabase.instance.ref().child('tables');
 
   // Fetch all diamonds
   Future<List<Diamond>> fetchDiamonds() async {
@@ -44,10 +47,8 @@ class FirebaseService {
         await _diamondsRef.child(diamond.firebaseKey!).update(diamond.toMap());
       } else {
         // If no key exists, we need to find the diamond by ID first
-        final snapshot = await _diamondsRef
-            .orderByChild('id')
-            .equalTo(diamond.id)
-            .get();
+        final snapshot =
+            await _diamondsRef.orderByChild('id').equalTo(diamond.id).get();
 
         if (snapshot.exists) {
           Map<dynamic, dynamic> values = snapshot.value as Map;
@@ -74,7 +75,8 @@ class FirebaseService {
   }
 
   // Fetch transactions for a specific diamond
-  Future<List<DiamondTransaction>> fetchTransactionsForDiamond(int diamondId) async {
+  Future<List<DiamondTransaction>> fetchTransactionsForDiamond(
+      int diamondId) async {
     try {
       final snapshot = await _transactionsRef
           .orderByChild('diamondId')
@@ -98,7 +100,8 @@ class FirebaseService {
   }
 
   // Save table configuration
-  Future<void> saveTableConfig(String tableName, List<String> columnNames, List<String> columnHeaders) async {
+  Future<void> saveTableConfig(String tableName, List<String> columnNames,
+      List<String> columnHeaders) async {
     try {
       await _tablesRef.child(tableName).set({
         'columnNames': columnNames,

@@ -67,13 +67,25 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
   Future<TableInfo> _createDefaultTable() async {
     // Default column names and headers
     List<String> columnNames = [
-      'id', 'caratWeight', 'clarity', 'color', 'currentHolder',
-      'receivedDate', 'status', 'price'
+      'id',
+      'caratWeight',
+      'clarity',
+      'color',
+      'currentHolder',
+      'receivedDate',
+      'status',
+      'price'
     ];
 
     List<String> columnHeaders = [
-      'ID', 'Carats', 'Clarity', 'Color', 'Current Holder',
-      'Received Date', 'Status', 'Price'
+      'ID',
+      'Carats',
+      'Clarity',
+      'Color',
+      'Current Holder',
+      'Received Date',
+      'Status',
+      'Price'
     ];
 
     // Create data source
@@ -92,7 +104,8 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
     );
   }
 
-  List<GridColumn> _generateColumns(List<String> columnNames, List<String> columnHeaders) {
+  List<GridColumn> _generateColumns(
+      List<String> columnNames, List<String> columnHeaders) {
     List<GridColumn> columns = [];
 
     for (int i = 0; i < columnNames.length; i++) {
@@ -100,11 +113,11 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
         GridColumn(
           columnName: columnNames[i],
           label: Container(
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             alignment: Alignment.center,
             child: Text(
               columnHeaders[i],
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
         ),
@@ -115,19 +128,20 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
   }
 
   void _addNewTable() {
-    final nameController = TextEditingController(text: 'New Table ${tables.length + 1}');
+    final nameController =
+        TextEditingController(text: 'New Table ${tables.length + 1}');
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Create New Table',
+        title: const Text('Create New Table',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
               controller: nameController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Table Name',
                 border: OutlineInputBorder(),
               ),
@@ -137,7 +151,7 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancel', style: TextStyle(color: Colors.red)),
+            child: const Text('Cancel', style: TextStyle(color: Colors.red)),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -148,16 +162,29 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
               setState(() {
                 // Create a new table with the same structure as the default
                 List<String> columnNames = [
-                  'id', 'caratWeight', 'clarity', 'color', 'currentHolder',
-                  'receivedDate', 'status', 'price'
+                  'id',
+                  'caratWeight',
+                  'clarity',
+                  'color',
+                  'currentHolder',
+                  'receivedDate',
+                  'status',
+                  'price'
                 ];
 
                 List<String> columnHeaders = [
-                  'ID', 'Carats', 'Clarity', 'Color', 'Current Holder',
-                  'Received Date', 'Status', 'Price'
+                  'ID',
+                  'Carats',
+                  'Clarity',
+                  'Color',
+                  'Current Holder',
+                  'Received Date',
+                  'Status',
+                  'Price'
                 ];
 
-                List<GridColumn> columns = _generateColumns(columnNames, columnHeaders);
+                List<GridColumn> columns =
+                    _generateColumns(columnNames, columnHeaders);
 
                 tables.add(TableInfo(
                   name: nameController.text,
@@ -179,7 +206,7 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
               });
               Navigator.pop(context);
             },
-            child: Text('Create', style: TextStyle(color: Colors.white)),
+            child: const Text('Create', style: TextStyle(color: Colors.white)),
             style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
           ),
         ],
@@ -193,14 +220,14 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Rename Table',
+        title: const Text('Rename Table',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
               controller: nameController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Table Name',
                 border: OutlineInputBorder(),
               ),
@@ -210,7 +237,7 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancel', style: TextStyle(color: Colors.red)),
+            child: const Text('Cancel', style: TextStyle(color: Colors.red)),
           ),
           ElevatedButton(
             onPressed: () {
@@ -219,7 +246,7 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
               });
               Navigator.pop(context);
             },
-            child: Text('Rename', style: TextStyle(color: Colors.white)),
+            child: const Text('Rename', style: TextStyle(color: Colors.white)),
             style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
           ),
         ],
@@ -228,14 +255,15 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
   }
 
   void _editColumns() {
-    List<TextEditingController> headerControllers = tables[tabIndex].columnHeaders
+    List<TextEditingController> headerControllers = tables[tabIndex]
+        .columnHeaders
         .map((header) => TextEditingController(text: header))
         .toList();
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Edit Column Headers',
+        title: const Text('Edit Column Headers',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
         content: Container(
           width: double.maxFinite,
@@ -244,12 +272,13 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
             itemCount: tables[tabIndex].columnHeaders.length,
             itemBuilder: (context, index) {
               return Padding(
-                padding: EdgeInsets.symmetric(vertical: 5),
+                padding: const EdgeInsets.symmetric(vertical: 5),
                 child: TextField(
                   controller: headerControllers[index],
                   decoration: InputDecoration(
-                    labelText: 'Column ${index + 1} (${tables[tabIndex].columnNames[index]})',
-                    border: OutlineInputBorder(),
+                    labelText:
+                        'Column ${index + 1} (${tables[tabIndex].columnNames[index]})',
+                    border: const OutlineInputBorder(),
                   ),
                 ),
               );
@@ -259,13 +288,15 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancel', style: TextStyle(color: Colors.red)),
+            child: const Text('Cancel', style: TextStyle(color: Colors.red)),
           ),
           ElevatedButton(
             onPressed: () {
               setState(() {
                 // Update column headers
-                for (int i = 0; i < tables[tabIndex].columnHeaders.length; i++) {
+                for (int i = 0;
+                    i < tables[tabIndex].columnHeaders.length;
+                    i++) {
                   tables[tabIndex].columnHeaders[i] = headerControllers[i].text;
                 }
 
@@ -277,7 +308,7 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
               });
               Navigator.pop(context);
             },
-            child: Text('Save', style: TextStyle(color: Colors.white)),
+            child: const Text('Save', style: TextStyle(color: Colors.white)),
             style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
           ),
         ],
@@ -297,7 +328,7 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Add New Diamond',
+        title: const Text('Add New Diamond',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
         content: SingleChildScrollView(
           child: Form(
@@ -307,7 +338,7 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
               children: [
                 TextFormField(
                   controller: caratController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                       labelText: 'Carat Weight', border: OutlineInputBorder()),
                   keyboardType: TextInputType.number,
                   validator: (value) {
@@ -317,10 +348,10 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
                     return null;
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextFormField(
                   controller: clarityController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                       labelText: 'Clarity', border: OutlineInputBorder()),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -329,10 +360,10 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
                     return null;
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextFormField(
                   controller: colorController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                       labelText: 'Color', border: OutlineInputBorder()),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -341,10 +372,10 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
                     return null;
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextFormField(
                   controller: receivedFromController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                       labelText: 'Received From', border: OutlineInputBorder()),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -353,10 +384,10 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
                     return null;
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextFormField(
                   controller: priceController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                       labelText: 'Price', border: OutlineInputBorder()),
                   keyboardType: TextInputType.number,
                   validator: (value) {
@@ -366,10 +397,10 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
                     return null;
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextFormField(
                   controller: notesController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                       labelText: 'Notes', border: OutlineInputBorder()),
                   maxLines: 3,
                 ),
@@ -380,7 +411,7 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancel', style: TextStyle(color: Colors.red)),
+            child: const Text('Cancel', style: TextStyle(color: Colors.red)),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -388,9 +419,12 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
                 // Generate new diamond ID
                 int newId = 1;
                 if (tables[tabIndex].dataSource.diamonds.isNotEmpty) {
-                  newId = tables[tabIndex].dataSource.diamonds
-                      .map((d) => d.id)
-                      .reduce((a, b) => a > b ? a : b) + 1;
+                  newId = tables[tabIndex]
+                          .dataSource
+                          .diamonds
+                          .map((d) => d.id)
+                          .reduce((a, b) => a > b ? a : b) +
+                      1;
                 }
 
                 final newDiamond = Diamond(
@@ -427,7 +461,7 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
                 Navigator.pop(context);
               }
             },
-            child: Text('Add', style: TextStyle(color: Colors.white)),
+            child: const Text('Add', style: TextStyle(color: Colors.white)),
             style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
           ),
         ],
@@ -439,7 +473,7 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
     final currentTable = tables[tabIndex];
     if (currentTable.selectedDiamonds.length != 1) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
             content: Text('Please select exactly one diamond to transfer')),
       );
       return;
@@ -452,20 +486,20 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Transfer Diamond',
+        title: const Text('Transfer Diamond',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
               controller: toPersonController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                   labelText: 'Transfer To', border: OutlineInputBorder()),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             TextField(
               controller: notesController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                   labelText: 'Notes', border: OutlineInputBorder()),
               maxLines: 3,
             ),
@@ -474,7 +508,7 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancel', style: TextStyle(color: Colors.red)),
+            child: const Text('Cancel', style: TextStyle(color: Colors.red)),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -503,11 +537,12 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
                 Navigator.pop(context);
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Please enter recipient name')),
+                  const SnackBar(content: Text('Please enter recipient name')),
                 );
               }
             },
-            child: Text('Transfer', style: TextStyle(color: Colors.white)),
+            child:
+                const Text('Transfer', style: TextStyle(color: Colors.white)),
             style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
           ),
         ],
@@ -519,7 +554,8 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
     final currentTable = tables[tabIndex];
     if (currentTable.selectedDiamonds.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please select a diamond to view its history')),
+        const SnackBar(
+            content: Text('Please select a diamond to view its history')),
       );
       return;
     }
@@ -530,12 +566,12 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => Center(child: CircularProgressIndicator()),
+      builder: (context) => const Center(child: CircularProgressIndicator()),
     );
 
     // Fetch transactions from Firebase
     List<DiamondTransaction> diamondTransactions =
-    await _firebaseService.fetchTransactionsForDiamond(diamond.id);
+        await _firebaseService.fetchTransactionsForDiamond(diamond.id);
     diamondTransactions.sort((a, b) => b.date.compareTo(a.date));
 
     // Close loading indicator
@@ -544,34 +580,35 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Transaction History',
+        title: const Text('Transaction History',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
         content: Container(
           width: double.maxFinite,
           child: diamondTransactions.isEmpty
-              ? Center(child: Text('No transaction history found'))
+              ? const Center(child: Text('No transaction history found'))
               : ListView.builder(
-            shrinkWrap: true,
-            itemCount: diamondTransactions.length,
-            itemBuilder: (context, index) {
-              final transaction = diamondTransactions[index];
-              return Card(
-                margin: EdgeInsets.symmetric(vertical: 5),
-                child: ListTile(
-                  title: Text(
-                      '${transaction.action} - ${DateFormat('yyyy-MM-dd HH:mm').format(transaction.date)}',
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  subtitle: Text(
-                      'From: ${transaction.fromPerson}\nTo: ${transaction.toPerson}\nNotes: ${transaction.notes}'),
+                  shrinkWrap: true,
+                  itemCount: diamondTransactions.length,
+                  itemBuilder: (context, index) {
+                    final transaction = diamondTransactions[index];
+                    return Card(
+                      margin: const EdgeInsets.symmetric(vertical: 5),
+                      child: ListTile(
+                        title: Text(
+                            '${transaction.action} - ${DateFormat('yyyy-MM-dd HH:mm').format(transaction.date)}',
+                            style:
+                                const TextStyle(fontWeight: FontWeight.bold)),
+                        subtitle: Text(
+                            'From: ${transaction.fromPerson}\nTo: ${transaction.toPerson}\nNotes: ${transaction.notes}'),
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
-          ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Close', style: TextStyle(color: Colors.blue)),
+            child: const Text('Close', style: TextStyle(color: Colors.blue)),
           ),
         ],
       ),
@@ -582,91 +619,93 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Diamond Inventory Management',
+        title: const Text('Diamond Inventory Management',
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
         centerTitle: true,
         backgroundColor: Colors.blue,
         elevation: 10,
         actions: [
           IconButton(
-            icon: Icon(Icons.add_box, color: Colors.white),
+            icon: const Icon(Icons.add_box, color: Colors.white),
             onPressed: _addNewTable,
             tooltip: 'Create New Table',
           ),
           IconButton(
-            icon: Icon(Icons.edit, color: Colors.white),
+            icon: const Icon(Icons.edit, color: Colors.white),
             onPressed: _renameTable,
             tooltip: 'Rename Table',
           ),
           IconButton(
-            icon: Icon(Icons.view_column, color: Colors.white),
+            icon: const Icon(Icons.view_column, color: Colors.white),
             onPressed: _editColumns,
             tooltip: 'Edit Column Headers',
           ),
           IconButton(
-            icon: Icon(Icons.add, color: Colors.white),
+            icon: const Icon(Icons.add, color: Colors.white),
             onPressed: _addNewDiamond,
             tooltip: 'Add Diamond',
           ),
           IconButton(
-            icon: Icon(Icons.transfer_within_a_station, color: Colors.white),
+            icon: const Icon(Icons.transfer_within_a_station,
+                color: Colors.white),
             onPressed: _transferDiamond,
             tooltip: 'Transfer Diamond',
           ),
           IconButton(
-            icon: Icon(Icons.history, color: Colors.white),
+            icon: const Icon(Icons.history, color: Colors.white),
             onPressed: _viewTransactionHistory,
             tooltip: 'View History',
           ),
         ],
         bottom: _isLoading
-            ? PreferredSize(
-          preferredSize: Size.fromHeight(4.0),
-          child: LinearProgressIndicator(),
-        )
+            ? const PreferredSize(
+                preferredSize: Size.fromHeight(4.0),
+                child: LinearProgressIndicator(),
+              )
             : TabBar(
-          controller: _tabController,
-          isScrollable: true,
-          tabs: tables.map((table) => Tab(text: table.name)).toList(),
-        ),
+                controller: _tabController,
+                isScrollable: true,
+                tabs: tables.map((table) => Tab(text: table.name)).toList(),
+              ),
       ),
       body: _isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : TabBarView(
-        controller: _tabController,
-        children: tables.map((table) {
-          return Container(
-            padding: EdgeInsets.all(16),
-            child: SfDataGrid(
-              source: table.dataSource,
-              selectionMode: SelectionMode.multiple,
-              onSelectionChanged: (addedRows, removedRows) {
-                setState(() {
-                  for (var row in removedRows) {
-                    int id = row.getCells()[0].value;
-                    table.selectedDiamonds.removeWhere((diamond) => diamond.id == id);
-                  }
-                  for (var row in addedRows) {
-                    int id = row.getCells()[0].value;
-                    Diamond? diamond = table.dataSource.diamonds
-                        .firstWhere((diamond) => diamond.id == id);
-                    if (!table.selectedDiamonds.contains(diamond)) {
-                      table.selectedDiamonds.add(diamond);
-                    }
-                  }
-                });
-              },
-              columns: table.columns,
-              gridLinesVisibility: GridLinesVisibility.both,
-              headerGridLinesVisibility: GridLinesVisibility.both,
-              allowSorting: true,
-              allowFiltering: true,
-              rowHeight: 50,
-              headerRowHeight: 50,
+              controller: _tabController,
+              children: tables.map((table) {
+                return Container(
+                  padding: const EdgeInsets.all(16),
+                  child: SfDataGrid(
+                    source: table.dataSource,
+                    selectionMode: SelectionMode.multiple,
+                    onSelectionChanged: (addedRows, removedRows) {
+                      setState(() {
+                        for (var row in removedRows) {
+                          int id = row.getCells()[0].value;
+                          table.selectedDiamonds
+                              .removeWhere((diamond) => diamond.id == id);
+                        }
+                        for (var row in addedRows) {
+                          int id = row.getCells()[0].value;
+                          Diamond? diamond = table.dataSource.diamonds
+                              .firstWhere((diamond) => diamond.id == id);
+                          if (!table.selectedDiamonds.contains(diamond)) {
+                            table.selectedDiamonds.add(diamond);
+                          }
+                        }
+                      });
+                    },
+                    columns: table.columns,
+                    gridLinesVisibility: GridLinesVisibility.both,
+                    headerGridLinesVisibility: GridLinesVisibility.both,
+                    allowSorting: true,
+                    allowFiltering: true,
+                    rowHeight: 50,
+                    headerRowHeight: 50,
+                  ),
+                );
+              }).toList(),
             ),
-          );
-        }).toList(),
-      ),
     );
   }
 }
