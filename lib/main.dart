@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:intl/intl.dart';
@@ -9,17 +10,21 @@ void main() async {
     options: const FirebaseOptions(
       apiKey: "AIzaSyBiF06hjlU7icFXPn6QBrmKgHmlz8XbNzI",
       authDomain: "diamond-management-322be.firebaseapp.com",
+      databaseURL:
+          "https://diamond-management-322be-default-rtdb.firebaseio.com",
       projectId: "diamond-management-322be",
-      storageBucket: "diamond-management-322be.firebasestorage.app",
+      storageBucket: "diamond-management-322be.appspot.com",
       messagingSenderId: "862164183040",
       appId: "1:862164183040:android:062be2358927d813b550e5",
     ),
   );
 
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -30,7 +35,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Roboto',
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: DiamondManagementScreen(),
+      home: const DiamondManagementScreen(),
     );
   }
 }
@@ -97,6 +102,8 @@ class TableInfo {
 }
 
 class DiamondManagementScreen extends StatefulWidget {
+  const DiamondManagementScreen({super.key});
+
   @override
   _DiamondManagementScreenState createState() =>
       _DiamondManagementScreenState();
@@ -263,8 +270,8 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
               });
               Navigator.pop(context);
             },
-            child: const Text('Create', style: TextStyle(color: Colors.white)),
             style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+            child: const Text('Create', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -303,8 +310,8 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
               });
               Navigator.pop(context);
             },
-            child: const Text('Rename', style: TextStyle(color: Colors.white)),
             style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+            child: const Text('Rename', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -365,8 +372,8 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
               });
               Navigator.pop(context);
             },
-            child: const Text('Save', style: TextStyle(color: Colors.white)),
             style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+            child: const Text('Save', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -471,8 +478,25 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
             child: const Text('Cancel', style: TextStyle(color: Colors.red)),
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               if (formKey.currentState!.validate()) {
+                DatabaseReference databaseRef =
+                    FirebaseDatabase.instance.ref("diamonds");
+
+                try {
+                  await databaseRef.push().set({
+                    "Carat Weight": caratController.text,
+                    "Clarity": clarityController.text,
+                    "Price": priceController.text,
+                    "Received From": receivedFromController.text,
+                    "Notes": notesController.text,
+                  });
+
+                  print("✅ Diamond data successfully added to Firebase!");
+                } catch (e) {
+                  print("❌ Error adding diamond data: $e");
+                }
+
                 setState(() {
                   final currentTable = tables[tabIndex];
                   final newDiamond = Diamond(
@@ -504,8 +528,8 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
                 Navigator.pop(context);
               }
             },
-            child: const Text('Add', style: TextStyle(color: Colors.white)),
             style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+            child: const Text('Add', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -573,9 +597,9 @@ class _DiamondManagementScreenState extends State<DiamondManagementScreen>
               });
               Navigator.pop(context);
             },
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
             child:
                 const Text('Transfer', style: TextStyle(color: Colors.white)),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
           ),
         ],
       ),
