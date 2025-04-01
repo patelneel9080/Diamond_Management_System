@@ -26,11 +26,14 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBiF06hjlU7icFXPn6QBrmKgHmlz8XbNzI',
-    appId: '1:862164183040:android:062be2358927d813b550e5',
+    apiKey: 'AIzaSyCNHEkDZjbU_VyFqmkugK1v4M2C5qVRxJA',
+    appId: '1:862164183040:web:e08b339a523cff2ab550e5',
     messagingSenderId: '862164183040',
     projectId: 'diamond-management-322be',
+    authDomain: 'diamond-management-322be.firebaseapp.com',
     databaseURL: 'https://diamond-management-322be-default-rtdb.firebaseio.com',
+    storageBucket: 'diamond-management-322be.firebasestorage.app',
+    measurementId: 'G-GNLSTGQVV5',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
@@ -39,30 +42,38 @@ class DefaultFirebaseOptions {
     messagingSenderId: '862164183040',
     projectId: 'diamond-management-322be',
     databaseURL: 'https://diamond-management-322be-default-rtdb.firebaseio.com',
+    storageBucket: 'diamond-management-322be.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBiF06hjlU7icFXPn6QBrmKgHmlz8XbNzI',
-    appId: '1:862164183040:android:062be2358927d813b550e5',
+    apiKey: 'AIzaSyC8V__kPNGWhhUYl8dVPSCM3t1nEmTTxk4',
+    appId: '1:862164183040:ios:ea86fc0226d3dea9b550e5',
     messagingSenderId: '862164183040',
     projectId: 'diamond-management-322be',
     databaseURL: 'https://diamond-management-322be-default-rtdb.firebaseio.com',
+    storageBucket: 'diamond-management-322be.firebasestorage.app',
+    iosBundleId: 'com.example.gSheetApp',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyBiF06hjlU7icFXPn6QBrmKgHmlz8XbNzI',
-    appId: '1:862164183040:android:062be2358927d813b550e5',
+    apiKey: 'AIzaSyC8V__kPNGWhhUYl8dVPSCM3t1nEmTTxk4',
+    appId: '1:862164183040:ios:ea86fc0226d3dea9b550e5',
     messagingSenderId: '862164183040',
     projectId: 'diamond-management-322be',
     databaseURL: 'https://diamond-management-322be-default-rtdb.firebaseio.com',
+    storageBucket: 'diamond-management-322be.firebasestorage.app',
+    iosBundleId: 'com.example.gSheetApp',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyBiF06hjlU7icFXPn6QBrmKgHmlz8XbNzI',
-    appId: '1:862164183040:android:062be2358927d813b550e5',
+    apiKey: 'AIzaSyCNHEkDZjbU_VyFqmkugK1v4M2C5qVRxJA',
+    appId: '1:862164183040:web:185ba4bd43bfa496b550e5',
     messagingSenderId: '862164183040',
     projectId: 'diamond-management-322be',
+    authDomain: 'diamond-management-322be.firebaseapp.com',
     databaseURL: 'https://diamond-management-322be-default-rtdb.firebaseio.com',
+    storageBucket: 'diamond-management-322be.firebasestorage.app',
+    measurementId: 'G-K0GMJ21SWJ',
   );
 
   static const FirebaseOptions linux = FirebaseOptions(

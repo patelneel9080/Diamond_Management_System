@@ -22,11 +22,11 @@ class DiamondDataSource extends DataGridSource {
 
   Future<void> _loadDiamonds() async {
     try {
-      diamonds = await _firebaseService.fetchDiamonds();
+      // Modify this to use the correct method or implement a method to fetch diamonds
+      diamonds = []; // Placeholder - you'll need to implement diamond fetching
 
-      // If no diamonds exist in the database, add some sample data
+      // If no diamonds exist, add sample data
       if (diamonds.isEmpty) {
-        // Sample data
         diamonds = [
           Diamond(1, 1.5, 'VS1', 'D', 'John', 'Supplier A', DateTime.now(),
               'Available', 15000, 'Premium cut'),
@@ -36,21 +36,7 @@ class DiamondDataSource extends DataGridSource {
 
         // Add sample diamonds to Firebase
         for (var diamond in diamonds) {
-          await _firebaseService.addDiamond(diamond);
-        }
-
-        // Add sample transactions
-        for (var diamond in diamonds) {
-          await _firebaseService.addTransaction(
-              DiamondTransaction(
-                diamond.id,
-                DateTime.now(),
-                diamond.receivedFrom,
-                diamond.currentHolder,
-                'Received',
-                'Initial receipt of diamond',
-              )
-          );
+          await addDiamond(diamond);
         }
       }
 
@@ -58,7 +44,6 @@ class DiamondDataSource extends DataGridSource {
       notifyListeners();
     } catch (e) {
       print('Error loading diamonds: $e');
-      // Initialize with empty list if there's an error
       diamonds = [];
       _generateDataGridRows();
       notifyListeners();
@@ -87,17 +72,37 @@ class DiamondDataSource extends DataGridSource {
   }
 
   Future<void> addDiamond(Diamond diamond) async {
-    await _firebaseService.addDiamond(diamond);
-    // After adding to Firebase, refresh the local list
-    diamonds = await _firebaseService.fetchDiamonds();
+    // Use addDiamondData method
+    await _firebaseService.addDiamondData(
+        carat: diamond.caratWeight.toString(),
+        clarity: diamond.clarity,
+        price: diamond.price.toString(),
+        receivedFrom: diamond.receivedFrom,
+        notes: diamond.notes
+    );
+
+    // Refresh local list (you'll need to implement a method to fetch diamonds)
+    // diamonds = await _fetchDiamonds();
     _generateDataGridRows();
     notifyListeners();
   }
 
   Future<void> updateDiamond(Diamond diamond) async {
-    await _firebaseService.updateDiamond(diamond);
-    // After updating in Firebase, refresh the local list
-    diamonds = await _firebaseService.fetchDiamonds();
+    // Use updateDiamondData method
+    await _firebaseService.updateDiamondData(
+        diamond.id.toString(),
+        {
+          'Carat Weight': diamond.caratWeight.toString(),
+          'Clarity': diamond.clarity,
+          'Price': diamond.price.toString(),
+          'Received From': diamond.receivedFrom,
+          'Description': diamond.notes,
+          'Status': diamond.status
+        }
+    );
+
+    // Refresh local list (you'll need to implement a method to fetch diamonds)
+    // diamonds = await _fetchDiamonds();
     _generateDataGridRows();
     notifyListeners();
   }
