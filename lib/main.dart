@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Roboto',
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: const DiamondManagementScreen(),
+      home: const LoginPage(),
     );
   }
 }
